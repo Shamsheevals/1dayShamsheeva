@@ -60,6 +60,6 @@ function stringChange(target){
     }
     console.log(target + ' : ' + intString)
 }
-
+console.log(1)
 stringChange(12000)
 
