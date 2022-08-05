@@ -1,0 +1,93 @@
+body {
+    text-align: center;
+    margin: 10;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 16px;
+    background-image: url(https://cdn1.vectorstock.com/i/1000x1000/13/40/todo-list-seamless-pattern-universal-background-vector-7561340.jpg)
+}
+
+
+input {
+
+
+    display: inline-block;
+    margin: 20px auto;
+    border: 5px solid;
+    border-color: antiquewhite;
+    padding: 10px 20px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    width: 80%;
+    height: 25px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+h1 {
+    text-transform: capitalize;
+    background-color: antiquewhite;
+    color: rgb(0, 0, 0);
+    margin: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+}
+
+.todo {
+    width: 1000px;
+    margin: auto;
+}
+
+ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+}
+
+#addTasks {
+    width: 20%;
+    height: 50px;
+    background-color: antiquewhite;
+}
+
+#saveTasks {
+    width: 20%;
+    height: 50px;
+    background-color: antiquewhite
+}
+
+#deleteTasks {
+    width: 20%;
+    height: 50px;
+    background-color: antiquewhite;
+}
+
+.li {
+
+    background-color: antiquewhite;
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 2;
+    width: 100%;
+
+}
+
+.li-active {
+    color: black;
+    text-decoration: line-through;
+    background-color: burlywood;
+}
+
+.li-active .button {
+    color: darkblue;
+    text-decoration: line-through;
+    background: burlywood;
+}
