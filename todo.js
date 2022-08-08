@@ -1,22 +1,16 @@
 const $input = document.getElementById("input");
 const $button = document.getElementById("button");
-const $list = document.getElementById("list");
-const $result = document.getElementById("result");
+const $todoListContainer = document.getElementById("list");
+const $activeTasksCounter = document.getElementById("result");
 let tasksArr = [];
 let counter = 0;
-
-function createOnEnter(e) {
-  if (e.key === "Enter") document.getElementById("addTasks").click();
-}
-
-$input.addEventListener("keydown", createOnEnter);
 
 $button.addEventListener("click", (e) => {
   createTodo($input.value);
 });
 
-const createTodo = (title) => {
-  const valueTask = title.trim();
+const createTodo = (text) => {
+  const valueTask = text.trim();
   if (!valueTask) {
     return;
   }
@@ -28,7 +22,7 @@ const createTodo = (title) => {
   tasksArr.push(task);
   console.log(tasksArr);
   $input.value = "";
- return render();
+  return render();
 };
 
 const completeTodo = (id) => {
@@ -50,29 +44,41 @@ const removeTodo = (id) => {
 };
 
 const render = () => {
-  $list.innerHTML = "";
-  tasksArr.map((task) => {
+  $todoListContainer.innerHTML = "";
+  $activeTasksCounter.textContent = counter;
+  tasksArr.forEach((task) => {
     console.log(task);
-    const li = document.createElement("li");
-    li.className = "li";
+    const $todoItem = document.createElement("li");
+    $todoItem.className = "li";
     if (task.isCheked) {
-      li.classList.add("li-active");
+      $todoItem.classList.add("li-active");
     }
-    li.innerHTML = `
-   <button onclick="completeTodo(${task.id})">Завершено</button>
-    ${task.text}
-    <button onclick="removeTodo(${task.id})"> Удалить </button>`;
-    $list.appendChild(li);
-    $result.textContent = `${tasksArr.length}`;
+    $todoItem.innerHTML = task.text;
+
+    const $toggleStatusButton = document.createElement("button");
+    $toggleStatusButton.innerHTML = "Завершено";
+    $todoItem.prepend($toggleStatusButton);
+    $toggleStatusButton.addEventListener("click", (event) => completeTodo(task.id));
+
+    const $removeButton = document.createElement("button");
+    $removeButton.innerHTML = "Удалить";
+    $todoItem.append($removeButton);
+    $removeButton.addEventListener("click", (event) => removeTodo(task.id))
+
+    $todoListContainer.appendChild($todoItem);
+    $activeTasksCounter.textContent = `${tasksArr.length}`;
   });
-  return;
 };
 
 
+const handleInputKeyDown = (event) => {
+  if (event.key === "Enter") {
+    createTodo($input.value)
 
+  }
+}
 
-
-
-
-
-
+$input.addEventListener("keydown", handleInputKeyDown);
+$button.addEventListener("click", (e) => {
+  createTodo($input.value);
+});
