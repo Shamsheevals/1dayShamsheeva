@@ -3,10 +3,17 @@ const $button = document.getElementById("button");
 const $todoListContainer = document.getElementById("list");
 const $activeTasksCounter = document.getElementById("result");
 let tasksArr = [];
-let counter = 0;
+let counter = 0
+
+
+const setLocal=()=>{
+  localStorage.setItem("todos",JSON.stringify(tasksArr))
+}
+
 
 $button.addEventListener("click", (e) => {
   createTodo($input.value);
+  setLocal();
 });
 
 const createTodo = (text) => {
@@ -22,6 +29,7 @@ const createTodo = (text) => {
   tasksArr.push(task);
   console.log(tasksArr);
   $input.value = "";
+  setLocal();
   return render();
 };
 
@@ -34,13 +42,17 @@ const completeTodo = (id) => {
       ...todoItem,
       isCheked: !todoItem.isCheked,
     };
-  });
+  }); 
+  setLocal();
   render();
+  
 };
 
 const removeTodo = (id) => {
   tasksArr = tasksArr.filter((el) => el.id !== id);
+  setLocal();
   render();
+
 };
 
 const render = () => {
@@ -58,27 +70,36 @@ const render = () => {
     const $toggleStatusButton = document.createElement("button");
     $toggleStatusButton.innerHTML = "Завершено";
     $todoItem.prepend($toggleStatusButton);
-    $toggleStatusButton.addEventListener("click", (event) => completeTodo(task.id));
+    $toggleStatusButton.addEventListener("click", () => completeTodo(task.id));
 
     const $removeButton = document.createElement("button");
     $removeButton.innerHTML = "Удалить";
     $todoItem.append($removeButton);
-    $removeButton.addEventListener("click", (event) => removeTodo(task.id))
+    $removeButton.addEventListener("click", () => removeTodo(task.id))
 
     $todoListContainer.appendChild($todoItem);
     $activeTasksCounter.textContent = `${tasksArr.length}`;
+    setLocal();
   });
 };
 
 
 const handleInputKeyDown = (event) => {
   if (event.key === "Enter") {
-    createTodo($input.value)
-
+    createTodo($input.value);
+    setLocal();
   }
 }
 
 $input.addEventListener("keydown", handleInputKeyDown);
 $button.addEventListener("click", (e) => {
   createTodo($input.value);
+  setLocal();
+});
+
+
+
+window.addEventListener("load", (event)=>{
+  tasksArr=JSON.parse(localStorage.getItem("todos"));
+  render()
 });
