@@ -5,10 +5,12 @@ const $activeTasksCounter = document.getElementById("result");
 const $selectItem = document.getElementById("selectItem");
 let tasksArr = JSON.parse(localStorage.getItem("todos")) || [];
 const $filterItem = document.querySelector("filterItem");
+let counter;
+
 const setLocal = () => {
   localStorage.setItem("todos", JSON.stringify(tasksArr));
 };
-let lengthArr=$activeTasksCounter.textContent = `${tasksArr.length}`
+
 const createTodo = (text) => {
   const valueTask = text.trim();
   if (!valueTask) {
@@ -43,16 +45,19 @@ const removeTodo = (id) => {
   render(tasksArr);
 };
 
+
 const filterTodos = (value) => {
-  let arr = tasksArr
-  if (value === "activeItem") {
-    arr = tasksArr.filter((el) => !el.isCheked);
-  } else if (value === "chekedItem") {
-    arr = tasksArr.filter((el) => el.isCheked); 
-  } else {
-    arr = tasksArr 
-  }
-  lengthArr
+  let arr = tasksArr.filter((task) => {
+    if (!task.isCheked) {
+      counter++;
+    }
+    if (value === 'allItem') {
+      return true;
+    }
+    const checkedStatus = (value === 'chekedItem');
+    return task.isCheked === checkedStatus;
+
+  });
   render(arr);
 };
 
@@ -60,7 +65,7 @@ const buttonComplete = (todoItem, id) => {
   const $toggleStatusButton = document.createElement("button");
   $toggleStatusButton.innerHTML = "Завершено";
   todoItem.prepend($toggleStatusButton);
-  $toggleStatusButton.addEventListener("click", () => completeTodo(task.id));
+  $toggleStatusButton.addEventListener("click", () => completeTodo(id))
 };
 
 
@@ -68,8 +73,7 @@ const buttonRemove = (todoItem, id) => {
   const $removeButton = document.createElement("button");
   $removeButton.innerHTML = "Удалить";
   todoItem.append($removeButton);
-  $removeButton.addEventListener("click", () => removeTodo(task.id))
-
+  $removeButton.addEventListener("click", () => removeTodo(id))
 };
 
 const createTodoItem = (arr) => {
@@ -81,9 +85,10 @@ const createTodoItem = (arr) => {
       $todoItem.classList.add("li-active");
     }
     $todoItem.innerHTML = task.text;
-    buttonComplete($todoItem, task.id)
-    buttonRemove($todoItem, task.id)
-    $todoListContainer.appendChild($todoItem)
+    buttonComplete($todoItem, task.id);
+    buttonRemove($todoItem, task.id);
+    $todoListContainer.appendChild($todoItem);
+    $activeTasksCounter.textContent = `${arr.length}`;
   })
 };
 
@@ -91,7 +96,6 @@ const render = (arr) => {
   $todoListContainer.innerHTML = "";
   $activeTasksCounter.textContent = 0;
   createTodoItem(arr);
-  $activeTasksCounter.textContent = `${tasksArr.length}`;
   setLocal();
 }
 
