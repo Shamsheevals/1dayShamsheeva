@@ -12,6 +12,7 @@
 <body>
     <div class="todo">
         <h1>Список дел:</h1>
+        
         <input id="input" type="text" placeholder="Название задачи">
         <ol id="list">
 
@@ -20,6 +21,11 @@
             <button id="addTasks">Добавить</button>
 
         </div>
+               <select id="selectItem">
+            <option value="allItem">Все</option>
+            <option value="activeItem">Активные </option>
+            <option value="chekedItem">Завершенные</option>
+        </select>
         <div>
             Всего:
             <span id="result"></span>

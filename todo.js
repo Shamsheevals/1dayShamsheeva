@@ -1,87 +1,99 @@
 const $input = document.getElementById("input");
 const $button = document.getElementById("button");
-const $list = document.getElementById("list");
-const $result = document.getElementById("result");
-const tasksArr = [];
-let counter = 0;
-
-function createOnEnter(e) {
-  if (e.key === "Enter")
-    document.getElementById('addTasks').click();
-}
-
-$input.addEventListener("keydown", createOnEnter);
-
-
-$button.addEventListener("click", (e) => {
-  createTodo($input.value);
-});
-
-// const createElement = (value) => {
-//   const $todoItem = document.createElement("li");
-//   $todoItem.className = "li";
-//   $todoItem.textContent = value;
-//   i++; 
-
-//   const $deleteButton = document.createElement("button");
-//   $deleteButton.className = "button";
-//   $deleteButton.textContent = "удалить";
-//   $todoItem.append($deleteButton); // create 'delete' button
-
-//   $deleteButton.addEventListener("click", () => {
-//     $todoItem.remove();
-//     i--;
-//     $result.textContent = i;
-//   });
-//   const $completedButton = document.createElement("button")
-//   $completedButton.textContent = "Завершено"
-//   $todoItem.prepend($completedButton);
-//   $completedButton.addEventListener("click", (e) => {
-//     $todoItem.classList.toggle("li-active");
-//   });
-//   $result.textContent = i;
-//   $list.appendChild($todoItem);
-// };
-
-
-
-const createTodo = (title) => {
-  const valueTask = title.trim()
+const $todoListContainer = document.getElementById("list");
+const $activeTasksCounter = document.getElementById("result");
+const $selectItem = document.getElementById("selectItem");
+//localStorage
+let tasksArr = JSON.parse(localStorage.getItem("todos")) || [];
+const $filterItem = document.querySelector("filterItem");
+const setLocal = () => {
+  localStorage.setItem("todos", JSON.stringify(tasksArr));
+};
+//create li
+const createTodo = (text) => {
+  const valueTask = text.trim();
   if (!valueTask) {
     return;
   }
   const task = {
     text: valueTask,
-    isActive: true,
+    isCheked: false,
     id: Date.now(),
-  }
+  };
   tasksArr.push(task);
-  console.log(tasksArr)
+  console.log(tasksArr);
   $input.value = "";
+  return render(tasksArr);
+};
+//cheked
+const completeTodo = (id) => {
+  tasksArr = tasksArr.map((todoItem) => {
+    if (todoItem.id !== id) {
+      return todoItem;
+    }
+    return {
+      ...todoItem,
+      isCheked: !todoItem.isCheked,
+    };
+  });
   render(tasksArr);
 };
-
-const completeTodo=(id)=>{
-  tasksArr.map( ( el ) => el.id === id && {...el,isActive:!el.isActive});
-}
-const removeTodo=(id)=>{
-  tasksArr.filter(el=>el.id!==id)
-}
-const render = (tasksArr) => {
-  $list.innerHTML = "";
-  tasksArr.map(task => {
-    console.log(task)
-    const li = document.createElement("li")
-    li.className = "li";
-    li.innerHTML = `
-    <button onclick=${completeTodo(task.id)}>Завершить </button>
-     ${task.text} 
-     <button onclick=${removeTodo(task.i)}> Удалить </button>
-    `;
-    $list.appendChild(li)
-    $result.textContent = `${ tasksArr.length }`;
-  });
+//remove
+const removeTodo = (id) => {
+  tasksArr = tasksArr.filter((el) => el.id !== id);
+  render(tasksArr);
 };
+//filter
+const filterTodos = (value) => {
+  let arr = tasksArr
+  if (value === "activeItem") {
+    arr = tasksArr.filter((el) => !el.isCheked);
+  } else if (value === "chekedItem") {
+    arr = tasksArr.filter((el) => el.isCheked);
+  } else {
+    arr = tasksArr
+  }
+  render(arr);
+};
+//render(2 button,counter.create li)
+const render = (arr) => {
+  $todoListContainer.innerHTML = "";
+  $activeTasksCounter.textContent = 0;
+  arr.forEach((task) => {
+    console.log(task);
+    const $todoItem = document.createElement("li");
+    $todoItem.className = "li";
+    if (task.isCheked) {
+      $todoItem.classList.add("li-active");
+    }
+    $todoItem.innerHTML = task.text;
+    const $toggleStatusButton = document.createElement("button");
+    $toggleStatusButton.innerHTML = "Завершено";
+    $todoItem.prepend($toggleStatusButton);
+    $toggleStatusButton.addEventListener("click", () => completeTodo(task.id));
+    const $removeButton = document.createElement("button");
+    $removeButton.innerHTML = "Удалить";
+    $todoItem.append($removeButton);
+    $removeButton.addEventListener("click", () => removeTodo(task.id));
+    $todoListContainer.appendChild($todoItem);
+    $activeTasksCounter.textContent = `${tasksArr.length}`;
+  });
+  setLocal();
+};
+//enter
+const handleInputKeyDown = (event) => {
+  if (event.key === "Enter") {
+    createTodo($input.value);
+  }
+};
+render(tasksArr);
 
-// Add Listeners
- 
+$input.addEventListener("keydown", handleInputKeyDown);
+
+$button.addEventListener("click", (e) => {
+  createTodo($input.value);
+});
+// addevent filter
+$selectItem.addEventListener("change", (event) =>
+  filterTodos(event.target.value)
+);

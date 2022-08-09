@@ -88,3 +88,11 @@ ol {
     text-decoration: line-through;
     background: burlywood;
 }
+
+.complete-button {
+ color:blue
+
+}
+.remove-button{
+    color: aquamarine;
+}
